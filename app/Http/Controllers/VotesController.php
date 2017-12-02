@@ -152,9 +152,6 @@ class VotesController extends Controller
         ],200);
 
 
-
-
-
     }
 
     public  function edit(Request $request){

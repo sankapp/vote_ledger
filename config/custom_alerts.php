@@ -11,4 +11,7 @@ return[
     'EDIT_VOTE_VAL_REQ'=>'new vote value required',
     'NOTE_REQ'=>'note required',
     'ALREADY_EXIST'=>'the vote is already exist ',
+    'PAYMENT_REQ'=>'payment value required',
+    'ALL_FIELDS_REQ'=>'all fields are required',
+    'VALID_DATE_RANGE_REQ'=>'Please enter valid date range',
 ];

@@ -15,7 +15,7 @@ class CreateVoteUpdatesTable extends Migration
     {
         Schema::create('vote_updates', function (Blueprint $table) {
             $table->increments('id');
-                $table->string('d_vote');
+            $table->string('d_vote');
             $table->float('d_allocation');
             $table->float('changed_d_allocation');
             $table->string('a_vote');
