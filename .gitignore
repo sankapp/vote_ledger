@@ -24,3 +24,4 @@ server.php
 storage/
 tests/
 webpack.mix.js
+public/vendor

@@ -13,7 +13,7 @@ use \Config;
 class VotesController extends Controller
 {
     public function index(){
-        return view('vote');
+        return view('pagers.votes');
     }
 
     public function create(Request $request){

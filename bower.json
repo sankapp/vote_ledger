@@ -1,0 +1,21 @@
+{
+  "name": "vote.dev",
+  "description": "vote ledger",
+  "main": "vote",
+  "authors": [
+    "Sanka Palinda"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/sankapp/vote_ledger",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7"
+  }
+}

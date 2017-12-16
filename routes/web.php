@@ -10,7 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-/*Route::get('/','VotesController@show');
+/*
 Route::get('/votes/create','VotesController@create');
 Route::get('/votes','VotesController@show');
 Route::get('/votes/range','VotesController@range');
@@ -20,3 +20,6 @@ Route::get('/votes/{id}/edit','VotesController@edit');
 Route::get('votes/updated','VoteUpdateController@show');
 Route::post('/votes/update','VoteUpdateController@store');
 Route::get('/votes/view','VoteUpdateController@view');*/
+
+Route::get('/','DashboardController@index');
+Route::get('/votes','VotesController@index');
