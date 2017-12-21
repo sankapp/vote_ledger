@@ -16,6 +16,10 @@ class VotesController extends Controller
         return view('pagers.votes');
     }
 
+    public function createVoteView(){
+        return view('pagers.createvote');
+    }
+
     public function create(Request $request){
         if(!$request->has('vote')){
             return response()->json([
@@ -133,7 +137,7 @@ class VotesController extends Controller
         }
 
         // validate year filed exist in DB ------------------------------
-        if($request->has('vote')){
+        if($request->has('year')){
             $search_vote = votes::where('year','LIKE',$request->year.'%')->get();
             if(count($search_vote)==null){
                 return response()->json([
@@ -143,8 +147,14 @@ class VotesController extends Controller
             }
         }
 
-        $filtered_votes = votes::where('vote','LIKE',$request->vote.'%')->get();
-        $filtered_votes_sum = votes::where('vote','LIKE',$request->vote.'%')->sum('allocate');
+        $filtered_votes = votes::where([
+            ['vote','LIKE',$request->vote.'%'],
+            ['year','=',$request->year]])
+            ->get();
+        $filtered_votes_sum = votes::where([
+            ['vote','LIKE',$request->vote.'%'],
+            ['year','=',$request->year]])
+            ->sum('allocate');
         return response()->json([
             'status'=>'success',
             'filtered_votes' => $filtered_votes,

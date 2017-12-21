@@ -23,3 +23,4 @@ Route::get('/votes/view','VoteUpdateController@view');*/
 
 Route::get('/','DashboardController@index');
 Route::get('/votes','VotesController@index');
+Route::get('/create_vote','VotesController@createVoteView');
