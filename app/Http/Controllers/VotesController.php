@@ -223,8 +223,15 @@ class VotesController extends Controller
             }
         }
 
-        $deduct_vote_details = votes::where('vote','=',$request->deduct_vote)->get();
-        $add_vote_details = votes::where('vote','=',$request->add_vote)->get();
+        $deduct_vote_details = votes::where([
+            ['vote','=',$request->deduct_vote],
+            ['year','=',$request->year]
+        ])->get();
+        $add_vote_details = votes::where([
+            ['vote','=',$request->add_vote],
+            ['year','=',$request->year]
+
+        ])->get();
         return response()->json([
            'status'=>'success',
            'deduct_vote_details'=>$deduct_vote_details,
