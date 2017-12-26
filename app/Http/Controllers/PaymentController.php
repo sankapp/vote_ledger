@@ -11,6 +11,14 @@ use Mockery\Exception;
 
 class PaymentController extends Controller
 {
+    public function index(){
+        return view('pagers.payments');
+    }
+
+
+    public function createView(){
+        return view('pagers.create_payment');
+    }
 
     public function create(Request $request){
         if(!$request->has('vote')){
@@ -126,7 +134,7 @@ class PaymentController extends Controller
     {
         try{
 
-            $allPayments = payment::all();
+            $allPayments = payment::latest()->get();
             $allPayments_sum = payment::all()->sum('payment');
             return response()->json([
                 'status'    => 'success',

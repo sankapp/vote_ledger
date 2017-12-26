@@ -2,36 +2,44 @@
 
 namespace App\Http\Controllers;
 
+use App\VoteUpdates;
 use Illuminate\Http\Request;
 use App\VoteUpdate;
 use App\Votes;
 
 class VoteUpdateController extends Controller
 {
-    public  function show(){
-        $votes = Votes::all('vote');
-        $updated_votes =VoteUpdate::latest()->get();
-        return view('updated_votes',compact('updated_votes','votes'));
-    }
 
-    public  function store(){
-        VoteUpdate::create(\request(['vote','allocation','plus','minus','total','Note','year']));
-        votes::where('vote','=',\request('vote'))->update([
-            'allocate'=>\request('total')
-        ]);
-        return $this->show();
-    }
-
-    public function view()
+    public function index()
     {
+      return view('pagers.updated_votes');
+    }
 
-            $vote = url($_GET['vote']);
-            $vote = substr($vote, 16);
+    public  function show(){
+        {
+            try{
 
-        //dd($vote);
-        $votes = Votes::all('vote');
-        $updated_votes=VoteUpdate::where('vote','=',$vote)->get();
-        return view('view_updated',compact('updated_votes','votes'));
+                $updated_votes = VoteUpdates::latest()->get();
+                return response()->json([
+                    'status'    => 'success',
+                    'updated_votes' => $updated_votes,
+                ],200);
+
+            }catch(Exception $exception){
+                return response()->json([
+                    'status'=>'error',
+                    'massage' => $exception->getMessage()
+                ],200);
+
+            }
+
+        }
+
+    }
+
+
+    public function filter(){
+
 
     }
 }

@@ -20,6 +20,14 @@ class VotesController extends Controller
         return view('pagers.createvote');
     }
 
+    public function editVoteView(){
+        return view('pagers.edit_and_update_vote');
+    }
+
+    public function deleteVoteView(){
+        return view('pagers.delete_vote');
+    }
+
     public function create(Request $request){
         if(!$request->has('vote')){
             return response()->json([

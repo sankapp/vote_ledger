@@ -28,6 +28,8 @@ Route::group(['prefix'=> $api_version],function(){
     Route::post('/votes/update','VotesController@update');
     Route::post('/votes/delete','VotesController@delete');
 
+    Route::get('/updated_votes','VoteUpdateController@show');
+
     Route::get('/payments','PaymentController@show');
     Route::post('/payments','PaymentController@create');
     Route::post('/payments/filter','PaymentController@filter');
