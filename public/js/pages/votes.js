@@ -49,7 +49,7 @@
                         output += "<tr >" +
                             "<td>" + resp.all_votes[i].id + "</td>" +
                             "<td>" + resp.all_votes[i].vote + "</td>" +
-                            "<td>" + resp.all_votes[i].allocate + "</td>" +
+                            "<td>" + resp.all_votes[i].allocate.toFixed(2) + "</td>" +
                             "<td>" + resp.all_votes[i].year + "</td>" +
                             "</tr>"
                         console.log(i);
@@ -77,7 +77,7 @@
                     output += "<tr >" +
                         "<td>" + resp.all_votes[i].id + "</td>" +
                         "<td>" + resp.all_votes[i].vote + "</td>" +
-                        "<td>" + resp.all_votes[i].allocate + "</td>" +
+                        "<td>" + resp.all_votes[i].allocate.toFixed(2) + "</td>" +
                         "<td>" + resp.all_votes[i].year + "</td>" +
                         "</tr>"
                     console.log(i);
@@ -133,7 +133,7 @@ $("#frm_search").submit(function (e) {
                         output += "<tr >" +
                             "<td>" + resp.filtered_votes[i].id + "</td>" +
                             "<td>" + resp.filtered_votes[i].vote + "</td>" +
-                            "<td>" + resp.filtered_votes[i].allocate + "</td>" +
+                            "<td>" + parseFloat(resp.filtered_votes[i].allocate).toFixed(2) + "</td>" +
                             "<td>" + resp.filtered_votes[i].year + "</td>" +
                             "</tr>"
                         console.log(i);
@@ -142,7 +142,7 @@ $("#frm_search").submit(function (e) {
 
                 output +="<tr style='background-color: #b2dba1; color: #8a6d3b'>" +
                     "<td colspan='2'> Total </td>" +
-                    "<td>" + resp.filtered_votes_sum + "</td>" +
+                    "<td>" + resp.filtered_votes_sum.toFixed(2) + "</td>" +
                     "<td></td>" +
                     "</tr>"
                 var update = document.getElementById('tbl_votes');

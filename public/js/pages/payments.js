@@ -29,6 +29,7 @@
                     "<th>Year</th>" +
                     "<th>Voucher No</th>" +
                     "<th>Voucher Date</th>" +
+                    "<th>Note</th>" +
                     "<th>Payment</th>" +
                     "<th>Date & Time</th>" +
                     "</tr>";
@@ -41,7 +42,8 @@
                             "<td>" + resp.all_payments[i].year + "</td>" +
                             "<td>" + resp.all_payments[i].voucher_no + "</td>" +
                             "<td>" + resp.all_payments[i].voucher_date + "</td>" +
-                            "<td>" + resp.all_payments[i].payment + "</td>" +
+                            "<td>" + resp.all_payments[i].note + "</td>" +
+                            "<td>" + resp.all_payments[i].payment.toFixed(2) + "</td>" +
                             "<td>" + resp.all_payments[i].updated_at + "</td>" +
                             "</tr>"
                         console.log(i);
@@ -96,6 +98,7 @@ $("#frm_payment_search").submit(function (e) {
                     "<th>Year</th>" +
                     "<th>Voucher No</th>" +
                     "<th>Voucher Date</th>" +
+                    "<th>Note</th>" +
                     "<th>Payment</th>" +
                     "<th>Date & Time</th>" +
                     "</tr>";
@@ -108,7 +111,8 @@ $("#frm_payment_search").submit(function (e) {
                         "<td>" + resp.filtered_payments[i].year + "</td>" +
                         "<td>" + resp.filtered_payments[i].voucher_no + "</td>" +
                         "<td>" + resp.filtered_payments[i].voucher_date + "</td>" +
-                        "<td>" + resp.filtered_payments[i].payment + "</td>" +
+                        "<td>" + resp.filtered_payments[i].note + "</td>" +
+                        "<td>" + resp.filtered_payments[i].payment.toFixed(2) + "</td>" +
                         "<td>" + resp.filtered_payments[i].updated_at + "</td>" +
                         "</tr>"
                     console.log(i);
@@ -116,8 +120,8 @@ $("#frm_payment_search").submit(function (e) {
                 }
 
                 output +="<tr style='background-color: #b2dba1; color: #8a6d3b'>" +
-                    "<td colspan='5'> Total </td>" +
-                    "<td>" + resp.filtered_payments_sum + "</td>" +
+                    "<td colspan='6'> Total </td>" +
+                    "<td>" + resp.filtered_payments_sum.toFixed(2) + "</td>" +
                     "<td></td>" +
                     "</tr>"
                 var update = document.getElementById('tbl_payments');

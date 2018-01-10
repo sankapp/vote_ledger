@@ -14,4 +14,5 @@ return[
     'PAYMENT_REQ'=>'payment value required',
     'ALL_FIELDS_REQ'=>'all fields are required',
     'VALID_DATE_RANGE_REQ'=>'Please enter valid date range',
+    'PAYMENT_ID_REQ'=>'Please enter valid payment id to delete',
 ];

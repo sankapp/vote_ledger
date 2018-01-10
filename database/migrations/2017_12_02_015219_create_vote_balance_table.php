@@ -19,6 +19,8 @@ class CreateVoteBalanceTable extends Migration
             $table->string('year');
             $table->float('current_val');
             $table->float('payment_val');
+            $table->string('voucher_no')->nullable();
+            $table->date('voucher_date')->nullable();
             $table->float('new_val');
             $table->timestamps();
         });

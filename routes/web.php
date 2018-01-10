@@ -31,3 +31,6 @@ Route::get('/updated_votes','VoteUpdateController@index');
 
 Route::get('/payments','PaymentController@index');
 Route::get('/make_payment','PaymentController@createView');
+Route::get('/delete_payment','PaymentController@deleteView');
+
+Route::get('/vote_balance','VoteBalanceController@index');

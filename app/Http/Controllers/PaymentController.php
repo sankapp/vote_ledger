@@ -16,6 +16,10 @@ class PaymentController extends Controller
     }
 
 
+    public function deleteView(){
+        return view('pagers.delete_payment');
+    }
+
     public function createView(){
         return view('pagers.create_payment');
     }
@@ -62,6 +66,7 @@ class PaymentController extends Controller
         $payment->year = $request->year;
         $payment->voucher_no = $request->voucher_no;
         $payment->voucher_date = $request->voucher_date;
+        $payment->note = $request->note;
         $payment->payment = $request->payment;
 
         try {
@@ -69,57 +74,11 @@ class PaymentController extends Controller
                 $new_payment = $request->all();
                 $new_payment['id'] = $request->id;
 
-                $result = response()->json([
+                return response()->json([
                     'status' => 'success',
                     'new_payment' => $new_payment,
-
                 ], 200);
 
-                if($result->status()==200) {
-
-                    //add payment to vote balance table
-
-                    $check_vote = VotesBalance::where([
-                        ['vote', '=', $request->vote],
-                        ['year', '=', $request->year],
-                    ])->get();
-
-                    if (count($check_vote) != null) {
-                        $current_vote_val = VotesBalance::latest()
-                            ->where([
-                                ['vote', '=', $request->vote],
-                                ['year', '=', $request->year],
-                            ])->value('new_val');
-
-                    } else {
-                        $current_vote_val = votes::where([
-                            ['vote', '=', $request->vote],
-                            ['year', '=', $request->year],
-                        ])->value('allocate');
-
-                    }
-
-
-                    $new_val = $current_vote_val - $request->payment;
-
-                    $vote_balance = new VotesBalance();
-                    $vote_balance->vote = $request->vote;
-                    $vote_balance->year = $request->year;
-                    $vote_balance->current_val = $current_vote_val;
-                    $vote_balance->payment_val = $request->payment;
-                    $vote_balance->new_val = $new_val;
-
-                    if($vote_balance->save()) {
-                        $new_vote_balance = $request->all();
-                        $new_vote_balance['id'] = $request->id;
-
-                        return response()->json([
-                            'status'=>'success',
-                            'new_vote_balance'=>$new_vote_balance
-                        ],200);
-                    }
-
-                }
             }
         }catch(Exception $exception){
             return response()->json([
@@ -127,6 +86,60 @@ class PaymentController extends Controller
                 'massage' => $exception->getMessage()
             ], 200);
         }
+    }
+
+    public function addToVoteBalance(Request $request){
+
+
+            //add payment to vote balance table
+
+            $check_vote = VotesBalance::where([
+                ['vote', '=', $request->vote],
+                ['year', '=', $request->year],
+            ])->get();
+
+            if (count($check_vote) != null) {
+                $current_vote_val = VotesBalance::latest()
+                    ->where([
+                        ['vote', '=', $request->vote],
+                        ['year', '=', $request->year],
+                    ])->value('new_val');
+
+            } else {
+                $current_vote_val = votes::where([
+                    ['vote', '=', $request->vote],
+                    ['year', '=', $request->year],
+                ])->value('allocate');
+
+            }
+
+
+
+
+            $new_val = $current_vote_val - $request->payment;
+
+            $vote_balance = new VotesBalance();
+            $vote_balance->vote = $request->vote;
+            $vote_balance->year = $request->year;
+            $vote_balance->current_val = $current_vote_val;
+            $vote_balance->payment_val = $request->payment;
+                if($request->has('voucher_no','voucher_date')){
+                    $vote_balance->voucher_no = $request->voucher_no;
+                    $vote_balance->voucher_date = $request->voucher_date;
+                }
+            $vote_balance->new_val = $new_val;
+
+            if($vote_balance->save()) {
+                $new_vote_balance = $request->all();
+                $new_vote_balance['id'] = $request->id;
+
+                return response()->json([
+                    'status'=>'success',
+                    'new_vote_balance'=>$vote_balance
+                ],200);
+            }
+
+
     }
 
 
@@ -210,6 +223,104 @@ class PaymentController extends Controller
 
     }
 
+    public function delete(Request $request){
+
+        if(!$request->has('id')){
+            return response()->json([
+                'status'=>'error',
+                'massage' => Config::get('custom_alerts.PAYMENT_ID_REQ')
+            ],200);
+        }
+
+        if($request->has('id')){
+
+            $payment_id =payment::where('id','=',$request->id)->get();
+
+            if($payment_id->isEmpty()){
+                return response()->json([
+                    'status'=>'error',
+                    'massage' => Config::get('custom_alerts.PAYMENT_ID_REQ')
+                ],200);
+            }
+        }
+
+        try{
+            $payment_value = VotesBalance::where('id','=',$request->id)
+                ->value('payment_val');
+            $deducted_payment = ($payment_value*-1);
+
+            $vote = VotesBalance::where('id','=',$request->id)
+                ->value('vote');
+
+            $year = VotesBalance::where('id','=',$request->id)
+                ->value('year');
+
+            $voucher_no = VotesBalance::where('id','=',$request->id)
+                ->value('voucher_no');
+
+            $voucher_date = VotesBalance::where('id','=',$request->id)
+                ->value('voucher_date');
 
 
+
+            $latest_balance = VotesBalance::where([
+                ['vote','=',$vote],
+                ['year','=',$year]
+            ])->latest()
+            ->value('new_val');
+
+            $new_val = ($latest_balance - $deducted_payment);
+
+            $vote_balance = new VotesBalance();
+            $vote_balance->vote = $vote;
+            $vote_balance->year = $year;
+            $vote_balance->current_val = $latest_balance;
+            $vote_balance->payment_val =$deducted_payment;
+            $vote_balance->voucher_no = $voucher_no;
+            $vote_balance->voucher_date = $voucher_date;
+            $vote_balance->new_val = $new_val;
+
+            if($vote_balance->save()) {
+                $new_vote_balance = $request->all();
+                $new_vote_balance['id'] = $request->id;
+                $delete_payment = payment::where('id', '=', $request->id)->delete();
+                return response()->json([
+                    'status'=>'success',
+                    'new_vote_balance'=>$vote_balance,
+                    'delete' => $delete_payment,
+
+                ],200);
+            }
+
+        }catch(Exception $exception){
+            return response()->json([
+                'status' => 'error',
+                'massage' => $exception->getMessage()
+            ], 200);
+        }
+
+
+
+    }
+
+    public function getData(Request $request){
+
+        try{
+
+            $payment= payment::Where('id','=',$request->id)->get();
+
+            return response()->json([
+                'status'    => 'success',
+                'payment' => $payment,
+            ],200);
+
+        }catch(Exception $exception){
+            return response()->json([
+                'status'=>'error',
+                'massage' => $exception->getMessage()
+            ],200);
+
+
+        }
+    }
 }

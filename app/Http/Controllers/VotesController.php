@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\VoteUpdate;
 use App\VoteUpdates;
+use App\VotesBalance;
 use Illuminate\Http\Request;
 use App\votes;
 use Illuminate\Support\Facades\Input;
 use Mockery\Exception;
 use \Config;
+use App\Http\Controllers\VoteBalanceController;
+use Carbon\Carbon;
 
 class VotesController extends Controller
 {
@@ -76,9 +79,25 @@ class VotesController extends Controller
                     $new_vote = $request->all();
                     $new_vote['id']=$vote->id;
 
+                    //insert vote balance
+                    $initialising_vote_balance = VotesBalance::insert(
+                        [
+                            'vote' => $vote->vote ,
+                            'year' => $vote->year,
+                            'current_val' => $vote->allocate,
+                            'payment_val' => 0,
+                            'voucher_no' => 'INITIALISING',
+                            'voucher_date' => \Carbon\Carbon::now(),
+                            'new_val' => $vote->allocate,
+                            "created_at" =>  \Carbon\Carbon::now(), # \Datetime()
+                            "updated_at" => \Carbon\Carbon::now(),  # \Datetime()
+                        ]
+                    );
+
                     return response()->json([
                         'status'=>'success',
-                        'Create_Vote' => $new_vote
+                        'Create_Vote' => $new_vote,
+                        'initialising_vote_balance' => $initialising_vote_balance,
                     ],200);
                 }
 
@@ -286,6 +305,9 @@ class VotesController extends Controller
             if($vote_val->save()){
                 $new_vote_val = $request->all();
                 $new_vote_val['id']=$request->id;
+
+            }
+
                 $change_d_val = votes::where('vote','=',$vote_val->d_vote)
                                 ->update([
                                     'allocate'=>$vote_val->changed_d_allocation
@@ -295,16 +317,61 @@ class VotesController extends Controller
                                     'allocate'=>$vote_val->changed_a_allocation
                                 ]);
 
+                //Change Vote balance
+            $latest_balance = VotesBalance::where([
+                ['vote','=',$vote_val->d_vote],
+                ['year','=',$vote_val->year],
+            ])->latest()
+                ->value('new_val');
 
-                return response()->json([
-                    'status'=>'success',
-                    'new_vote_val'=>$new_vote_val,
-                    'change_d_val'=>$change_d_val,
-                    'change_a_val'=>$change_a_val,
-                ],200);
+            $latest_balance1 = VotesBalance::where([
+                ['vote','=',$vote_val->a_vote],
+                ['year','=',$vote_val->year],
+            ])->latest()
+                ->value('new_val');
 
-            }
 
+            $payment = $vote_val->changed_amount;
+            $new_val= $latest_balance-$payment;
+            $new_val1= $latest_balance1+$payment;
+
+               $change_d_val_vote_balance = VotesBalance::insert(
+                    [
+                        'vote' => $vote_val->d_vote ,
+                        'year' => $vote_val->year,
+                        'current_val' => $latest_balance,
+                        'payment_val' => ($vote_val->changed_amount*-1),
+                        'voucher_no' => 'VOTE CHANGE',
+                        'voucher_date' => \Carbon\Carbon::now(),
+                        'new_val' => $new_val,
+                        "created_at" =>  \Carbon\Carbon::now(), # \Datetime()
+                        "updated_at" => \Carbon\Carbon::now(),  # \Datetime()
+                    ]
+                );
+
+            $change_a_val_vote_balance = VotesBalance::insert(
+                [
+                    'vote' => $vote_val->a_vote ,
+                    'year' => $vote_val->year,
+                    'current_val' => $latest_balance1,
+                    'payment_val' => $vote_val->changed_amount,
+                    'voucher_no' => 'VOTE CHANGE',
+                    'voucher_date' => \Carbon\Carbon::now(),
+                    'new_val' => $new_val1,
+                    "created_at" =>  \Carbon\Carbon::now(), # \Datetime()
+                    "updated_at" => \Carbon\Carbon::now(),  # \Datetime()
+                ]
+            );
+
+            return response()->json([
+                'status'=>'success',
+                'new_vote_val'=>$new_vote_val,
+                'change_d_val'=>$change_d_val,
+                'change_a_val'=>$change_a_val,
+                'change_d_val_vote_balance'=>$change_d_val_vote_balance,
+                'change_d_val_vote_balance'=>$change_a_val_vote_balance,
+
+            ],200);
 
         }catch(Exception $exception){
 
@@ -335,6 +402,7 @@ class VotesController extends Controller
 
 
         try {
+
             $delete_vote = votes::where([
                 ['vote', '=', $request->vote],
                 ['year', '=', $request->year],

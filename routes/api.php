@@ -32,5 +32,12 @@ Route::group(['prefix'=> $api_version],function(){
 
     Route::get('/payments','PaymentController@show');
     Route::post('/payments','PaymentController@create');
+    Route::post('/payments/delete','PaymentController@delete');
     Route::post('/payments/filter','PaymentController@filter');
+    Route::get('/payments/getData','PaymentController@getData');
+
+    Route::post('/add_new_vote_balance','PaymentController@addToVoteBalance');
+
+    Route::get('/vote_balance','VoteBalanceController@show');
+    Route::post('/vote_balance/filter','VoteBalanceController@filter');
 });

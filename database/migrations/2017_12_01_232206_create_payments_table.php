@@ -19,6 +19,7 @@ class CreatePaymentsTable extends Migration
             $table->string('year');
             $table->string('voucher_no')->nullable();
             $table->date('voucher_date')->nullable();
+            $table->string('note')->nullable();
             $table->float('payment');
             $table->timestamps();
         });

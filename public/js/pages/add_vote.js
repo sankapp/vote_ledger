@@ -23,6 +23,7 @@ $("#frm_add_vote").submit(function (e) {
                 alert(resp.message);
                 console.log(data);
             } else {
+                console.log(resp);
                 $("#massage").append("<p style='color:green'>successfully Added</p>");
             }
         })
