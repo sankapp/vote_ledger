@@ -114,11 +114,12 @@ class PaymentController extends Controller
             }
 
 
-
+            $pay_id = payment::latest()->value('id');
 
             $new_val = $current_vote_val - $request->payment;
 
             $vote_balance = new VotesBalance();
+            $vote_balance->payment_id = $pay_id;
             $vote_balance->vote = $request->vote;
             $vote_balance->year = $request->year;
             $vote_balance->current_val = $current_vote_val;
@@ -245,20 +246,20 @@ class PaymentController extends Controller
         }
 
         try{
-            $payment_value = VotesBalance::where('id','=',$request->id)
+            $payment_value = VotesBalance::where('payment_id','=',$request->id)
                 ->value('payment_val');
             $deducted_payment = ($payment_value*-1);
 
-            $vote = VotesBalance::where('id','=',$request->id)
+            $vote = VotesBalance::where('payment_id','=',$request->id)
                 ->value('vote');
 
-            $year = VotesBalance::where('id','=',$request->id)
+            $year = VotesBalance::where('payment_id','=',$request->id)
                 ->value('year');
 
-            $voucher_no = VotesBalance::where('id','=',$request->id)
+            $voucher_no = VotesBalance::where('payment_id','=',$request->id)
                 ->value('voucher_no');
 
-            $voucher_date = VotesBalance::where('id','=',$request->id)
+            $voucher_date = VotesBalance::where('payment_id','=',$request->id)
                 ->value('voucher_date');
 
 

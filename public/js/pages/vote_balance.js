@@ -22,6 +22,7 @@
 
                     var output = "<tr style='background-color: #b2dba1; color: #8a6d3b' >" +
                         "<th>Id</th>" +
+                        "<th>Payment Id</th>" +
                         "<th>Vote</th>" +
                         "<th>Year</th>" +
                         "<th>Current balance</th>" +
@@ -37,6 +38,7 @@
                         if (resp.all_votes_balances[i].year == req_year) {
                             output += "<tr >" +
                                 "<td>" + resp.all_votes_balances[i].id + "</td>" +
+                                "<td>" + resp.all_votes_balances[i].payment_id + "</td>" +
                                 "<td>" + resp.all_votes_balances[i].vote + "</td>" +
                                 "<td>" + resp.all_votes_balances[i].year + "</td>" +
                                 "<td>" + resp.all_votes_balances[i].current_val.toFixed(2) + "</td>" +
@@ -64,6 +66,7 @@
                     var req_year = document.getElementById('select_year').value;
                     var output = "<tr style='background-color: #b2dba1; color: #8a6d3b' >" +
                         "<th>Id</th>" +
+                        "<th>Payment Id</th>" +
                         "<th>Vote</th>" +
                         "<th>Year</th>" +
                         "<th>Current balance</th>" +
@@ -79,6 +82,7 @@
                         if (resp.all_votes_balances[i].year == req_year) {
                             output += "<tr >" +
                                 "<td>" + resp.all_votes_balances[i].id + "</td>" +
+                                "<td>" + resp.all_votes_balances[i].payment_id + "</td>" +
                                 "<td>" + resp.all_votes_balances[i].vote + "</td>" +
                                 "<td>" + resp.all_votes_balances[i].year + "</td>" +
                                 "<td>" + resp.all_votes_balances[i].current_val.toFixed(2) + "</td>" +
@@ -131,6 +135,7 @@ $("#frm_vote_balance_search").submit(function (e) {
                 var vote_bal_length = resp.vote_balance.length;
                 var output = "<tr style='background-color: #b2dba1; color: #8a6d3b' >" +
                     "<th>Id</th>" +
+                    "<th>Payment Id</th>" +
                     "<th>Vote</th>" +
                     "<th>Year</th>" +
                     "<th>Current balance</th>" +
@@ -144,6 +149,7 @@ $("#frm_vote_balance_search").submit(function (e) {
                 for (var i = 0; i < vote_bal_length; i++) {
                     output += "<tr >" +
                         "<td>" + resp.vote_balance[i].id + "</td>" +
+                        "<td>" + resp.vote_balance[i].payment_id + "</td>" +
                         "<td>" + resp.vote_balance[i].vote + "</td>" +
                         "<td>" + resp.vote_balance[i].year + "</td>" +
                         "<td>" + resp.vote_balance[i].current_val.toFixed(2) + "</td>" +

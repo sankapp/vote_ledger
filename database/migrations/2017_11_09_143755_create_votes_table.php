@@ -16,7 +16,7 @@ class CreateVotesTable extends Migration
         Schema::create('votes', function (Blueprint $table) {
             $table->increments('id');
             $table->string('vote');
-            $table->float('allocate', 8, 2);
+            $table->float('allocate','10','2');
             $table->string('year');
             $table->timestamps();
         });
